@@ -41,8 +41,8 @@ To install the Backstage project, follow these steps:
 1. **Clone the repository**:
 
     ```sh
-    git clone https://github.com/your-organization/backstage-project.git
-    cd backstage-project
+    git clone https://github.com/bistecglobal/backstage_bistec.git
+    cd backstage_bistec
     ```
 
 2. **Install dependencies**:
@@ -55,7 +55,13 @@ To install the Backstage project, follow these steps:
 
 To start the Backstage application, use the following commands:
 
-1. **Start the backend**:
+1. **Start the Whole Application**:
+    ```sh
+    cd backstage_bistec
+    yarn dev
+    ```
+
+1. **Start the backend Separately**:
 
     ```sh
     cd packages/backend
@@ -157,4 +163,3 @@ Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for more details on our code 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
