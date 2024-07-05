@@ -8,11 +8,14 @@
 
 import { createBackend } from '@backstage/backend-defaults';
 //Using custom Transformers
+import { createBackendModule } from '@backstage/backend-plugin-api';
+import { microsoftGraphOrgEntityProviderTransformExtensionPoint } from '@backstage/plugin-catalog-backend-module-msgraph/alpha';
+import {
+  myUserTransformer,
+} from './transformers';
 
-// import dotenv from 'dotenv';
 
 // Load environment variables from the .env file
-
 const path = require('path')
 require('dotenv').config({ path: path.resolve(__dirname, '../../../.env') })
 
@@ -22,6 +25,25 @@ backend.add(import('@backstage/plugin-app-backend/alpha'));
 backend.add(import('@backstage/plugin-proxy-backend/alpha'));
 backend.add(import('@backstage/plugin-scaffolder-backend/alpha'));
 backend.add(import('@backstage/plugin-techdocs-backend/alpha'));
+
+//Custom transformer
+backend.add(
+  createBackendModule({
+    pluginId: 'catalog',
+    moduleId: 'microsoft-graph-extensions',
+    register(env) {
+      env.registerInit({
+        deps: {
+          microsoftGraphTransformers:
+            microsoftGraphOrgEntityProviderTransformExtensionPoint,
+        },
+        async init({ microsoftGraphTransformers }) {
+          microsoftGraphTransformers.setUserTransformer(myUserTransformer);
+        },
+      });
+    },
+  }),
+);
 
 
 // auth plugin
