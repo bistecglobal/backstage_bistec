@@ -25,19 +25,14 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get update && \
     apt-get install -y --no-install-recommends libsqlite3-dev
 
-FROM python:3.12-alpine
 
-RUN apk update && apk --no-cache add gcc musl-dev openjdk17-jdk curl graphviz ttf-dejavu fontconfig
+RUN apt-get update && apt-get install -y python3 python3-pip python3-venv
 
-RUN curl -o plantuml.jar -L https://github.com/plantuml/plantuml/releases/download/v1.2023.10/plantuml-1.2023.10.jar && echo "527d28af080ae91a455e7023e1a726c7714dc98e plantuml.jar" | sha1sum -c - && mv plantuml.jar /opt/plantuml.jar
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-RUN pip install --upgrade pip && pip install mkdocs-techdocs-core==1.4.0
-
-RUN echo $'#!/bin/sh\n\njava -jar '/opt/plantuml.jar' ${@}' >> /usr/local/bin/plantuml
-
-RUN chmod 755 /usr/local/bin/plantuml
-
-ENTRYPOINT [ "mkdocs" ]
+RUN pip install --upgrade pip && pip install mkdocs-techdocs-core==1.3.5
 
 # From here on we use the least-privileged `node` user to run the backend.
 USER node
