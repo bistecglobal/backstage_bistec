@@ -26,6 +26,7 @@
     "@backstage/plugin-auth-backend-module-guest-provider": "^0.1.4",
     "@backstage/plugin-auth-node": "^0.4.13",
     "@backstage/plugin-catalog-backend": "^1.22.0",
+    "@backstage/plugin-catalog-backend-module-msgraph": "^0.5.29",
     "@backstage/plugin-catalog-backend-module-scaffolder-entity-model": "^0.1.16",
     "@backstage/plugin-permission-backend": "^0.5.42",
     "@backstage/plugin-permission-backend-module-allow-all-policy": "^0.1.15",
@@ -41,8 +42,9 @@
     "app": "link:../app",
     "better-sqlite3": "^9.0.0",
     "dockerode": "^3.3.1",
+    "dotenv": "^16.4.5",
     "node-gyp": "^9.0.0",
-    "pg": "^8.11.3",
+    "pg": "^8.12.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {
