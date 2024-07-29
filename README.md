@@ -68,7 +68,7 @@ To start the Backstage application, use the following commands:
     yarn start
     ```
 
-2. **Start the frontend**:
+2. **Start the frontend Separately**:
 
     In a new terminal window, navigate to the root directory and run:
 
