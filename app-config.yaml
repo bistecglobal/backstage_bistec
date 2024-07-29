@@ -6,30 +6,20 @@ organization:
   name: Bistec Global
 
 backend:
-  # Used for enabling authentication, secret is shared by all backend plugins
-  # See https://backstage.io/docs/auth/service-to-service-auth for
-  # information on the format
-  # auth:
-  #   keys:
-  #     - secret: ${BACKEND_SECRET}
   baseUrl: http://localhost:7007
   listen:
     port: 7007
-    # Uncomment the following host directive to bind to specific interfaces
-    # host: 127.0.0.1
   csp:
     connect-src: ["'self'", 'http:', 'https:']
-    # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
-    # Default Helmet Content-Security-Policy values can be removed by setting the key to false
   cors:
     origin: http://localhost:3000
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
-  # This is for local development only, it is not recommended to use this in production
-  # The production database configuration is stored in app-config.production.yaml
+  coop:
+    policy: same-origin 
+  corp:
+    policy: cross-origin
   database:
-    # client: better-sqlite3
-    # connection: ':memory:'
     client: pg
     connection:
       host: ${POSTGRES_HOST}
@@ -37,36 +27,29 @@ backend:
       user: ${POSTGRES_USER}
       password: ${POSTGRES_PASSWORD}
       database: ${POSTGRES_DB}
-
-  # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
-
-# integrations:
-  # github:
-  #   - host: github.com
-  #     # This is a Personal Access Token or PAT from GitHub. You can find out how to generate this token, and more information
-  #     # about setting up the GitHub integration here: https://backstage.io/docs/integrations/github/locations#configuration
-  #     token: ${GITHUB_TOKEN}
-    ### Example for how to add your GitHub Enterprise instance using the API:
-    # - host: ghe.example.net
-    #   apiBaseUrl: https://ghe.example.net/api/v3
-    #   token: ${GHE_TOKEN}
-
+      ssl: { rejectUnauthorized: false }
+    knexConfig:
+      pool:
+        min: 2
+        max: 10
+        acquireTimeoutMillis: 30000
+        createTimeoutMillis: 10000
+        destroyTimeoutMillis: 5000
+        idleTimeoutMillis: 30000
+        reapIntervalMillis: 1000
+        createRetryIntervalMillis: 200
+        propagateCreateError: false
 proxy:
-  ### Example for how to add a proxy endpoint for the frontend.
-  ### A typical reason to do this is to handle HTTPS and CORS for internal services.
-  # endpoints:
-  #   '/test':
-  #     target: 'https://example.com'
-  #     changeOrigin: true
+# Example of adding a proxy endpoint for the frontend to handle HTTPS and CORS for internal services.
+#   endpoints:
+#     '/test':
+#       target: 'https://example.com'
+#       changeOrigin: true
 
-# Reference documentation http://backstage.io/docs/features/techdocs/configuration
-# Note: After experimenting with basic setup, use CI/CD to generate docs
-# and an external cloud storage when deploying TechDocs for production use-case.
-# https://backstage.io/docs/features/techdocs/how-to-guides#how-to-migrate-from-techdocs-basic-to-recommended-deployment-approach
 techdocs:
-  builder: 'local' # Alternatives - 'external'
+  builder: 'local'
   generator:
-    runIn: 'local' # Alternatives - 'local'
+    runIn: 'local'
   publisher:
     type: 'azureBlobStorage'
     azureBlobStorage:
@@ -76,7 +59,6 @@ techdocs:
       containerName: 'techdocs'
   storageUrl: 'https://backstagebistec001.blob.core.windows.net/techdocs'
 
-# Microsoft Auth
 auth:
   environment: development
   providers:
@@ -92,72 +74,18 @@ auth:
         signIn:
           resolvers:
             - resolver: emailMatchingUserEntityProfileEmail
+    google:
+      development:
+        clientId: ${AUTH_GOOGLE_CLIENT_ID}
+        clientSecret: ${AUTH_GOOGLE_CLIENT_SECRET}
+        signIn:
+          resolvers:
+            - resolver: emailMatchingUserEntityAnnotation
 
-#Guest Auth
-# auth:
-#   # see https://backstage.io/docs/auth/ to learn about auth providers
-#   providers:
-#     # See https://backstage.io/docs/auth/guest/provider
-#     guest: {}
-
-
-scaffolder:
-  # see https://backstage.io/docs/features/software-templates/configuration for software template options
-
-
-#Catalog before the Microsoft Entra Tenant Data
-# catalog:
-#   import:
-#     entityFilename: catalog-info.yaml
-#     pullRequestBranchName: backstage-integration
-#   rules:
-#     - allow: [Component, System, API, Resource, Location]
-#   locations:
-#     # Local example data, file locations are relative to the backend process, typically `packages/backend`
-#     - type: file
-#       target: ./catalog-info.yaml
-
-#     # # Local example template
-#     # - type: file
-#     #   target: ../../examples/template/template.yaml
-#     #   rules:
-#     #     - allow: [Template]
-
-#     # # Local example organizational data
-#     # - type: file
-#     #   target: ../../examples/org.yaml
-#     #   rules:
-#     #     - allow: [User, Group]
-
-#     ## Uncomment these lines to add more example data
-#     - type: url
-#       target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml
-
-#     # Uncomment these lines to add an example org
-#     - type: url
-#       target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/acme-corp.yaml
-#       rules:
-#         - allow: [User, Group]
-
-#Microsoft providor microsoft graph org catalog added
 catalog:
-  providers:
-    microsoftGraphOrg:
-      default:
-        tenantId: ${MICROSOFT_TENANT_ID}
-        user:
-          filter: accountEnabled eq true and userType eq 'member'
-          select: ['id', 'displayName', 'mail']
-        group:
-          filter: >
-            securityEnabled eq false
-            and mailEnabled eq true
-            and groupTypes/any(c:c+eq+'Unified')
-        schedule:
-          frequency: PT1H
-          timeout: PT50M
+  locations:
+    - type: file
+      target: ./catalog-info.yaml
 
-#Permission Enabled
 permission:
   enabled: true
-
