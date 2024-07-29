@@ -13,3 +13,14 @@ spec:
   type: website
   owner: john@example.com
   lifecycle: experimental
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: koshilasandaru
+spec:
+  profile:
+    displayName: Koshila Sandaru
+    email: koshilasandaru3@gmail.com
+  memberOf: [team-a]
