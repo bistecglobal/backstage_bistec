@@ -44,4 +44,7 @@ backend.add(import('@backstage/plugin-catalog-backend-module-msgraph/alpha'));
 backend.add(import('@backstage/plugin-search-backend-module-catalog/alpha'));
 backend.add(import('@backstage/plugin-search-backend-module-techdocs/alpha'));
 
+// auth
+backend.add(import('@backstage/plugin-auth-backend-module-github-provider'));
+
 backend.start();

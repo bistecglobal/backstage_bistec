@@ -39,6 +39,16 @@ backend:
         reapIntervalMillis: 1000
         createRetryIntervalMillis: 200
         propagateCreateError: false
+auth:
+  environment: development
+  providers:
+    github:
+      development:
+        clientId: ${CLIENT_ID}
+        clientSecret: ${CLIENT_SECRET}
+        signIn:
+          resolvers:
+            - resolver: usernameMatchingUserEntityName
 proxy:
 # Example of adding a proxy endpoint for the frontend to handle HTTPS and CORS for internal services.
 #   endpoints:
@@ -59,33 +69,49 @@ techdocs:
       containerName: 'techdocs'
   storageUrl: 'https://backstagebistec001.blob.core.windows.net/techdocs'
 
-auth:
-  environment: development
-  providers:
-    guest: {}
-    microsoft:
-      development:
-        clientId: ${MICROSOFT_CLIENT_ID}
-        clientSecret: ${MICROSOFT_CLIENT_SECRET}
-        tenantId: ${MICROSOFT_TENANT_ID}
-        domainHint: ${MICROSOFT_DOMAIN_HINT}
-        additionalScopes:
-          - user.read
-        signIn:
-          resolvers:
-            - resolver: emailMatchingUserEntityProfileEmail
-    google:
-      development:
-        clientId: ${AUTH_GOOGLE_CLIENT_ID}
-        clientSecret: ${AUTH_GOOGLE_CLIENT_SECRET}
-        signIn:
-          resolvers:
-            - resolver: emailMatchingUserEntityAnnotation
+# auth:
+#   environment: development
+#   providers:
+#     guest: {}
+#     microsoft:
+#       development:
+#         clientId: ${MICROSOFT_CLIENT_ID}
+#         clientSecret: ${MICROSOFT_CLIENT_SECRET}
+#         tenantId: ${MICROSOFT_TENANT_ID}
+#         domainHint: ${MICROSOFT_DOMAIN_HINT}
+#         additionalScopes:
+#           - user.read
+#         signIn:
+#           resolvers:
+#             - resolver: emailMatchingUserEntityProfileEmail
+#     google:
+#       development:
+#         clientId: ${AUTH_GOOGLE_CLIENT_ID}
+#         clientSecret: ${AUTH_GOOGLE_CLIENT_SECRET}
+#         signIn:
+#           resolvers:
+#             - resolver: emailMatchingUserEntityAnnotation
 
 catalog:
   locations:
     - type: file
-      target: ./catalog-info.yaml
+      target: ../../examples/entities.yaml
+
+    - type: file
+      target: ../../examples/template/template.yaml
+      rules:
+        - allow: [Template]
+
+    # Local example organizational data
+    - type: file
+      target: ../../examples/org.yaml
+      rules:  
+        - allow: [User, Group]
 
 permission:
   enabled: true
+
+integrations:
+  github:
+    - host: github.com
+      token: ${GITHUB_TOKEN} # this should be the token from GitHub

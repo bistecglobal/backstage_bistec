@@ -23,6 +23,16 @@ import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/
 import { MyPluginPage } from '@internal/backstage-plugin-my-plugin';
 import { googleAuthApiRef, microsoftAuthApiRef } from '@backstage/core-plugin-api';
 
+import { githubAuthApiRef } from '@backstage/core-plugin-api';
+import { SignInProviderConfig } from '@backstage/core-components';
+
+ const githubProvider = {
+  id: 'github-auth-provider',
+  title:'GitHub',
+  message:'Sign in using GitHub',
+  apiRef: githubAuthApiRef,
+};
+
 const app = createApp({
   apis,
   bindRoutes({ bind }) {
@@ -46,22 +56,23 @@ const app = createApp({
     SignInPage: props => (
       <SignInPage
         {...props}
-        auto
-        providers={[
-          {
-            id: 'microsoft-auth-provider',
-            title: 'Microsoft',
-            message: 'Sign in using Microsoft',
-            apiRef: microsoftAuthApiRef,
-          },
-          {
-            id: 'google-auth-provider',
-            title: 'Google',
-            message: 'Sign in using Google',
-            apiRef: googleAuthApiRef,
-          },
-          'guest',
-        ]}
+        auto provider={githubProvider}
+        // auto
+        // providers={[
+        //   {
+        //     id: 'microsoft-auth-provider',
+        //     title: 'Microsoft',
+        //     message: 'Sign in using Microsoft',
+        //     apiRef: microsoftAuthApiRef,
+        //   },
+        //   {
+        //     id: 'google-auth-provider',
+        //     title: 'Google',
+        //     message: 'Sign in using Google',
+        //     apiRef: googleAuthApiRef,
+        //   },
+        //   'guest',
+        // ]}
       />
     ),
   },
